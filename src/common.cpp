@@ -136,7 +136,7 @@ namespace common {
 		if ( count < 1 )
 			return str;
 
-		if ( count > str.size())
+		if ( (size_t)count > str.size())
 			count = str.size();
 
 		std::string ret = str;
