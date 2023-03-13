@@ -1,11 +1,11 @@
 CXX?=g++
-CXXFLAGS?=--std=c++23
+CXXFLAGS?=--std=c++23 -Wall
 
-COMMON_CPP_OBJS:= objs/common.o
+COMMON_OBJS:= objs/common.o
 INCLUDES:=-I./include -I.
 
-all: $(COMMON_CPP_OBJS)
-world: $(COMMON_CPP_OBJS)
+all: $(COMMON_OBJS)
+world: $(COMMON_OBJS)
 
 objs/common.o: src/common.cpp
 	$(CXX) $(CXXFLAGS) $(INCLUDES) -c -o $@ $<;
