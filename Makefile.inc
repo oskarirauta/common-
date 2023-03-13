@@ -1,6 +1,6 @@
 COMMON_DIR?=common
 COMMON_OBJS:= objs/common.o
-INCLUDES += -I./$/COMMON_DIR)/include
+INCLUDES += -I./$(COMMON_DIR)/include
 
 all: $(COMMON_OBJS)
 world: $(COMMON_OBJS)
