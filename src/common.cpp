@@ -3,6 +3,7 @@
 #include <sstream>
 #include <string>
 #include <cmath>
+#include <filesystem>
 
 #include "common.hpp"
 
@@ -178,6 +179,25 @@ namespace common {
 		}
 
 		return res.str();
+	}
+
+	std::filesystem::path selfexe() {
+		return std::filesystem::exists("/proc/self/exe") &&
+			std::filesystem::is_symlink("/proc/self/exe") ?
+				std::filesystem::read_symlink("/proc/self/exe") : "";
+
+	}
+
+	std::filesystem::path selfpath() {
+		return std::filesystem::exists("/proc/self/exe") &&
+			std::filesystem::is_symlink("/proc/self/exe") ?
+				std::filesystem::read_symlink("/proc/self/exe").parent_path() : "";
+	}
+
+	std::filesystem::path selfbasename() {
+		return std::filesystem::exists("/proc/self/exe") &&
+			std::filesystem::is_symlink("/proc/self/exe") ?
+				std::filesystem::read_symlink("/proc/self/exe").filename() : "";
 	}
 
 }

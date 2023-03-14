@@ -6,6 +6,7 @@
 #include <chrono>
 #include <ctime>
 #include <map>
+#include <filesystem>
 
 namespace common {
 
@@ -185,5 +186,9 @@ namespace common {
 
 		return false;
 	}
+
+	std::filesystem::path selfexe();
+	std::filesystem::path selfpath();
+	std::filesystem::path selfbasename();
 
 }
