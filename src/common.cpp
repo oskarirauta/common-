@@ -103,6 +103,16 @@ namespace common {
 		return common::to_lower(s);
 	}
 
+	std::string to_upper(std::string &str) {
+		for ( auto& ch : str ) ch = std::toupper(ch);
+		return str;
+	}
+
+	std::string to_upper(const std::string &str) {
+		std::string s = str;
+		return common::to_upper(s);
+	}
+
 	std::string join_vector(const std::vector<std::string> v, const std::string delimeter) {
 
 		std::string result;

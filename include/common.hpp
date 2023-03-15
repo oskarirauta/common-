@@ -85,6 +85,10 @@ namespace common {
 
 	std::string to_lower(const std::string &str);
 
+	std::string to_upper(std::string &str);
+
+	std::string to_upper(const std::string &str);
+
 	std::string join_vector(const std::vector<std::string> v, const std::string delimeter = ", ");
 
 	std::string c_tostr(const char *str);
