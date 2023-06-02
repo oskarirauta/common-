@@ -16,6 +16,14 @@
 #define STRINGIFY_MACRO(s) STRINGIFY(s)
 #endif
 
+#ifndef APPNAME
+#define APPNAME unknown
+#endif
+
+#ifndef APPNAME_STR
+#define APPNAME_STR STRINGIFY_MACRO(APPNAME)
+#endif
+
 namespace common {
 
 	struct duration {
