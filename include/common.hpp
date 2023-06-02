@@ -8,6 +8,14 @@
 #include <map>
 #include <filesystem>
 
+#ifndef STRINGIFY
+#define STRINGIFY(s) #s
+#endif
+
+#ifndef STRINGIFY_MACRO
+#define STRINGIFY_MACRO(s) STRINGIFY(s)
+#endif
+
 namespace common {
 
 	struct duration {
