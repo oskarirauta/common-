@@ -81,6 +81,17 @@ namespace common {
 		return (*m) ? common::mix(*m,hash(m+1)) : 0;
 	}
 
+	template<typename... Ts>
+	std::string fmt(const std::string& fmt, Ts... vs) {
+
+		size_t size = snprintf(nullptr, 0, fmt.c_str(), vs...);
+		std::string buf;
+		buf.reserve(size + 1);
+		buf.resize(size);
+		snprintf(&buf[0], size + 1, fmt.c_str(), vs...);
+		return buf;
+	}
+
 	bool has_prefix(const std::string str, const std::string prefix);
 
 	bool has_suffix(const std::string str, const std::string suffix);
