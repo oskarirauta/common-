@@ -94,7 +94,10 @@ namespace common {
 	}
 
 	std::string to_lower(std::string &str) {
-		for ( auto& ch : str ) ch = tolower(ch);
+
+		for ( auto& ch : str )
+			if ( std::islower(ch))
+				ch &= ~32;
 		return str;
 	}
 
@@ -104,7 +107,10 @@ namespace common {
 	}
 
 	std::string to_upper(std::string &str) {
-		for ( auto& ch : str ) ch = std::toupper(ch);
+
+		for ( auto& ch : str )
+			if ( std::isupper(ch))
+				ch ^= 32;
 		return str;
 	}
 
@@ -140,6 +146,75 @@ namespace common {
 		return s.compare(0, 2, "0x") == 0
 			&& s.size() > 2
 			&& s.find_first_not_of("0123456789abcdefABCDEF", 2) == std::string::npos;
+	}
+
+	bool is_whitespace(const char& ch) {
+		return ( ch == ' ' || ch == '\t' || ch == '\n' || ch == '\r' || ch == '\f' || ch == '\v' );
+	}
+
+	bool is_whitespace(const std::string& s) {
+		return !s.empty() && is_whitespace(s.front());
+	}
+
+	bool is_space(const char& ch) {
+		return ch == ' ' || ch == '\t';
+	}
+
+        bool is_space(const std::string& s) {
+		return !s.empty() && is_space(s.front());
+	}
+
+        bool is_digit(const char& ch) {
+		return ch >= '0' && ch <= '9';
+	}
+
+        bool is_digit(const std::string& s) {
+		return !s.empty() && is_digit(s.front());
+	}
+
+        bool is_alpha(const char& ch) {
+		return ( ch >= 'A' && ch <= 'Z' ) || ( ch >= 'a' && ch <= 'z' ) || ch == '_';
+	}
+
+        bool is_alpha(const std::string& s) {
+		return !s.empty() && is_alpha(s.front());
+	}
+
+        bool is_alnum(const char& ch) {
+		return is_alpha(ch) || is_digit(ch);
+	}
+
+        bool is_alnum(const std::string& s) {
+		return !s.empty() && is_alnum(s.front());
+	}
+
+        const std::string erase_prefix(std::string& s, size_t n) {
+
+		if ( s.empty() || n == 0 )
+			return "";
+
+		std::string r;
+
+		if ( r = substr(0, n > s.size() ? s.size() : n=; !r.empty())
+			s.erase(0, r.size());
+
+		return r;
+	}
+
+        const char erase_front(std::string &s) {
+
+		if ( !s.empty()) {
+			char ch = s.front();
+			s.erase(0, 1);
+			return r;
+		} else return 0;
+	}
+
+        const std::string to_string(const double& d) {
+
+		std::stringstream ss;
+		ss << d;
+		return ss.str();
 	}
 
 	std::string trim_leading(const std::string str, int count) {

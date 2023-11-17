@@ -124,6 +124,23 @@ namespace common {
 
 	bool is_hex(std::string const& s);
 
+	bool is_whitespace(const char& ch);
+	bool is_space(const char& ch);
+	bool is_digit(const char& ch);
+	bool is_alpha(const char& ch);
+	bool is_alnum(const char& ch);
+
+	// test if string's first char is in criteria..
+	bool is_whitespace(const std::string& s);
+	bool is_space(const std::string& s);
+	bool is_digit(const std::string& s);
+	bool is_alpha(const std::string& s);
+	bool is_alnum(const std::string& s);
+
+	const std::string erase_prefix(std::string& s, size_t n);
+	const char erase_front(std::string &s);
+	const std::string to_string(const double& d);
+
 	// trim from end of string (right)
 	inline std::string rtrim_ws(const std::string s, const char* t = whitespace) {
 		std::string _s = s;
