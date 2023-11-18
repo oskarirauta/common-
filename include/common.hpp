@@ -71,7 +71,7 @@ namespace common {
 
 	};
 
-	static const char* whitespace = " \t\n\r\f\v";
+	static std::string whitespace = " \t\n\r\f\v";
 
 	uint64_t constexpr mix(char m, uint64_t s) {
 		return ((s<<7) + ~(s>>3)) + ~m;
@@ -142,21 +142,21 @@ namespace common {
 	const std::string to_string(const double& d);
 
 	// trim from end of string (right)
-	inline std::string rtrim_ws(const std::string s, const char* t = whitespace) {
+	inline std::string rtrim_ws(const std::string s, const std::string& t = whitespace) {
 		std::string _s = s;
 		_s.erase(_s.find_last_not_of(t) + 1);
 		return _s;
 	}
 
 	// trim from beginning of string (left)
-	inline std::string ltrim_ws(const std::string s, const char* t = whitespace) {
+	inline std::string ltrim_ws(const std::string s, const std::string& t = whitespace) {
 		std::string _s = s;
 		_s.erase(0, _s.find_first_not_of(t));
 		return _s;
 	}
 
 	// trim from both ends of string (right then left)
-	inline std::string trim_ws(const std::string s, const char* t = whitespace) {
+	inline std::string trim_ws(const std::string s, const std::string& t = whitespace) {
 		return common::ltrim_ws(common::rtrim_ws(s, t), t);
 	}
 

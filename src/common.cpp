@@ -195,7 +195,7 @@ namespace common {
 
 		std::string r;
 
-		if ( r = substr(0, n > s.size() ? s.size() : n=; !r.empty())
+		if ( r = s.substr(0, n > s.size() ? s.size() : n); !r.empty())
 			s.erase(0, r.size());
 
 		return r;
@@ -206,7 +206,7 @@ namespace common {
 		if ( !s.empty()) {
 			char ch = s.front();
 			s.erase(0, 1);
-			return r;
+			return ch;
 		} else return 0;
 	}
 
