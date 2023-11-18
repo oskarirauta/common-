@@ -96,8 +96,8 @@ namespace common {
 	std::string to_lower(std::string &str) {
 
 		for ( auto& ch : str )
-			if ( std::islower(ch))
-				ch &= ~32;
+			if ( std::isupper(ch))
+				ch ^= 32;
 		return str;
 	}
 
@@ -109,8 +109,8 @@ namespace common {
 	std::string to_upper(std::string &str) {
 
 		for ( auto& ch : str )
-			if ( std::isupper(ch))
-				ch ^= 32;
+			if ( std::islower(ch))
+				ch &= ~32;
 		return str;
 	}
 
