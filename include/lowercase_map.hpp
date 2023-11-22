@@ -6,6 +6,8 @@
 
 #include "common.hpp"
 
+namespace common {
+
 template <class T>
 class lowercase_map {
 	private:
@@ -224,3 +226,5 @@ lowercase_map<T>::size_type lowercase_map<T>::erase(const std::string& key) {
 
 	this -> _m.erase(common::to_lower(std::as_const(key)));
 }
+
+} // end of namespace
