@@ -1,14 +1,24 @@
+all: world
 CXX?=g++
-CXXFLAGS?=--std=c++23 -Wall
+CXXFLAGS?=--std=c++23 -Wall -fPIC -g
+LDFLAGS?=-L/lib -L/usr/lib
 
-COMMON_OBJS:= objs/common.o
-INCLUDES:=-I./include -I.
+INCLUDES+= -I./include
 
-all: $(COMMON_OBJS)
-world: $(COMMON_OBJS)
+OBJS:= \
+	objs/test.o
 
-objs/common.o: src/common.cpp
+COMMON_DIR:=.
+include ./Makefile.inc
+
+world: test
+
+objs/test.o: test.cpp
 	$(CXX) $(CXXFLAGS) $(INCLUDES) -c -o $@ $<;
 
+test: $(COMMON_OBJS) $(OBJS)
+	$(CXX) $(CXXFLAGS) $(LDFLAGS) -L. $(LIBS) $^ -o $@;
+
+.PHONY: clean
 clean:
-	rm -f objs/**
+	rm -f objs/*.o test
