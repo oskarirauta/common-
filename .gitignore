@@ -6,7 +6,6 @@
 *.lo
 *.o
 *.obj
-objs/*.*
 
 # Precompiled Headers
 *.gch
@@ -31,3 +30,6 @@ objs/*.*
 *.exe
 *.out
 *.app
+
+objs/*.o
+test
