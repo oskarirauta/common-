@@ -62,6 +62,7 @@ namespace common {
 		const_iterator find(const std::string& key) const;
 
 		T& operator [](const std::string& key);
+		T& operator [](std::string& key);
 		bool operator ==(const lowercase_map<T>& other);
 		bool operator !=(const lowercase_map<T>& other);
 		bool operator <(const lowercase_map<T>&other);
@@ -152,6 +153,11 @@ namespace common {
 
 	template <class T>
 	T& lowercase_map<T>::operator [](const std::string& key) {
+		return this -> _m[common::to_lower(std::as_const(key))];
+	}
+
+	template <class T>
+	T& lowercase_map<T>::operator [](std::string& key) {
 		return this -> _m[common::to_lower(std::as_const(key))];
 	}
 
