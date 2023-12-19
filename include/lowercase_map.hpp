@@ -339,7 +339,7 @@ namespace common {
 
 	template <class T>
 	lowercase_map<T>::size_type lowercase_map<T>::erase(const std::string& key) {
-		this -> _m.erase(common::to_lower(std::as_const(key)));
+		return this -> _m.erase(common::to_lower(std::as_const(key)));
 	}
 
 	template <class T>
