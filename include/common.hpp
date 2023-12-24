@@ -160,6 +160,9 @@ namespace common {
 		return common::ltrim_ws(common::rtrim_ws(s, t), t);
 	}
 
+	const std::string unquoted(const std::string& s, bool trimmed = true);
+	const std::string unquoted(std::string& s, bool trimmed = true);
+
 	std::string trim_leading(const std::string str, int count = 1);
 	double round(double val);
 	std::string memToStr(double amount, bool gigabytes = false);

@@ -1,5 +1,6 @@
 #include <iostream>
 #include <algorithm>
+#include <utility>
 #include <sstream>
 #include <string>
 #include <cmath>
@@ -216,6 +217,71 @@ namespace common {
 		ss << d;
 		return ss.str();
 	}
+
+	const std::string unquoted(const std::string& s, bool trimmed) {
+
+		std::string r = trimmed ? trim_ws(s) : s;
+
+		if ( r.empty())
+			return r;
+
+		if ( trimmed ) {
+
+			if ( r.front() == '\'' && r.back() == '\'' ) {
+
+				r.erase(0, 1);
+				r.pop_back();
+			} else if ( r.front() == '"' && r.back() == '"' ) {
+
+				r.erase(0, 1);
+				r.pop_back();
+			}
+
+			return r;
+		}
+
+		int i1 = -1;
+		int i2 = -1;
+		std::string ws = " \t\r\f\v";
+
+		for ( size_t i = 0; i < r.size(); i++ ) {
+
+			if ( ws.find_first_of(r.at(i)) == std::string::npos && (
+				r.at(i) == '\'' || r.at(i) == '"' )) {
+
+				i1 = i;
+				break;
+			}
+		}
+
+		if ( i1 == -1 )
+			return r;
+
+		for ( size_t i = r.size() - 1; i > 0; i++ ) {
+
+			if ( ws.find_first_of(r.at(i)) == std::string::npos &&
+				i != (size_t)i1 && r.at(i) == r.at(i1) && (
+				r.at(i) == '\'' || r.at(i) == '"' )) {
+
+					i2 = i;
+					break;
+			}
+		}
+
+		if ( i2 > i1 ) {
+
+			r.erase(i2, 1);
+			r.erase(i1, 1);
+		}
+
+		return r;
+	}
+
+	const std::string unquoted(std::string& s, bool trimmed) {
+		s = unquoted(std::as_const(s));
+		return s;
+	}
+
 
 	std::string trim_leading(const std::string str, int count) {
 
