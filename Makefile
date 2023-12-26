@@ -6,14 +6,14 @@ LDFLAGS?=-L/lib -L/usr/lib
 INCLUDES+= -I./include
 
 OBJS:= \
-	objs/test.o
+	objs/main.o
 
 COMMON_DIR:=.
 include ./Makefile.inc
 
 world: test
 
-objs/test.o: test.cpp
+objs/main.o: main.cpp
 	$(CXX) $(CXXFLAGS) $(INCLUDES) -c -o $@ $<;
 
 test: $(COMMON_OBJS) $(OBJS)
