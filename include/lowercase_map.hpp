@@ -221,6 +221,7 @@ namespace common {
 		this -> _m.clear();
 		for ( auto& [key, value] : l )
 			this -> _m[common::to_lower(std::as_const(key))] = value;
+		return *this;
 	}
 
 	template <class T>
@@ -229,6 +230,7 @@ namespace common {
 		this -> _m.clear();
 		for ( auto& [key, value] : other )
 			this -> _m[common::to_lower(std::as_const(key))] = value;
+		return *this;
 	}
 
 	template <class T>
@@ -237,6 +239,7 @@ namespace common {
 		this -> _m.clear();
 		for ( auto& [key, value] : map )
 			this -> _m[common::to_lower(std::as_const(key))] = value;
+		return *this;
 	}
 
 	template <class T>
@@ -244,6 +247,7 @@ namespace common {
 
 		this -> _m.clear();
 		this -> _m[common::to_lower(std::as_const(pair.first))] = pair.second;
+		return *this;
 	}
 
 	template <class T>
