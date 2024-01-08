@@ -26,6 +26,13 @@
 
 namespace common {
 
+	struct padding {
+		size_t width;
+		unsigned char fill = ' ';
+	};
+
+	std::ostream& operator <<(std::ostream &os, const padding& p);
+
 	struct duration {
 
 		private:

@@ -351,4 +351,12 @@ namespace common {
 				std::filesystem::read_symlink("/proc/self/exe").filename() : "";
 	}
 
+	std::ostream& operator <<(std::ostream &os, const padding& p) {
+
+		for ( size_t i = 0; i < p.width; i++ )
+			os << p.fill;
+
+		return os;
+	}
+
 }
