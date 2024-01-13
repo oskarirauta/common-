@@ -10,360 +10,434 @@
 #include "common.hpp"
 #include "lowercase_map.hpp"
 
-namespace common {
-
-	bool has_prefix(const std::string str, const std::string prefix) {
-
-		return ((prefix.length() <= str.length()) &&
-			std::equal(prefix.begin(), prefix.end(), str.begin()));
-	}
-
-	bool has_suffix(const std::string str, const std::string suffix) {
-
-		return ((suffix.length() <= str.length()) &&
-			str.find(suffix, str.size() - suffix.size()) != std::string::npos);
-	}
-
-	std::string str_first(const std::string str, char delim) {
-
-		std::stringstream ss(str);
-		std::string ret;
-		while ( std::getline(ss, ret, delim)) break;
-		return ret;
-	}
-
-	std::string trim(std::string &str, const std::string trimchars) {
-
-		if ( str.empty() || trimchars.empty()) return str;
-
-		for ( const char &ch : trimchars )
-			str.erase(std::remove(str.begin(), str.end(), ch), str.end());
-
-		return str;
-	}
-
-	std::string trim(const std::string &str, const std::string trimchars) {
-
-		std::string s = str;
-		return common::trim(s, trimchars);
-	}
-
-	std::vector<std::string> lines(const std::string &str, char delim, const std::string trimchars) {
-
-		std::vector<std::string> elems;
-		if ( str.empty()) return elems;
-		if ( str.find(delim) == std::string::npos) {
-			std::string item = str;
-			for ( const char &ch : trimchars )
-				item.erase(std::remove(item.begin(), item.end(), ch), item.end());
-			elems.push_back(item);
-			return elems;
-		}
-
-		std::stringstream ss(str);
-		std::string item;
-
-		while ( std::getline(ss, item, delim)) {
-			if ( !trimchars.empty())
-				for ( const char &ch : trimchars )
-					item.erase(std::remove(item.begin(), item.end(), ch), item.end());
-			elems.push_back(item);
-		}
-
-		return elems;
-	}
-
-	std::vector<std::string> split(const std::string &str, char delim, const std::string trimchars) {
-
-		std::vector<std::string> elems;
-		if ( str.empty()) return elems;
-
-		std::stringstream ss(str);
-		std::string item;
-
-		while ( std::getline(ss, item, delim)) {
-			if ( !trimchars.empty())
-				for ( const char &ch : trimchars )
-					item.erase(std::remove(item.begin(), item.end(), ch), item.end());
-			elems.push_back(item);
-		}
-
-		elems.erase(std::remove_if(elems.begin(), elems.end(),
-			[](const std::string& s) { return s.empty(); }),
-			elems.end());
-
-		return elems;
-
-	}
-
-	std::string to_lower(std::string &str) {
-
-		for ( auto& ch : str )
-			if ( std::isupper(ch))
-				ch ^= 32;
-		return str;
-	}
-
-	std::string to_lower(const std::string &str) {
-		std::string s = str;
-		return common::to_lower(s);
-	}
-
-	std::string to_upper(std::string &str) {
-
-		for ( auto& ch : str )
-			if ( std::islower(ch))
-				ch &= ~32;
-		return str;
-	}
-
-	std::string to_upper(const std::string &str) {
-		std::string s = str;
-		return common::to_upper(s);
-	}
-
-	std::string join_vector(const std::vector<std::string> v, const std::string delimeter) {
-
-		std::string result;
-
-                if (auto i = v.begin(), e = v.end(); i != e) {
-                        result += *i++;
-                        for (; i != e; ++i) result.append(delimeter).append(*i);
-                }
-
-		return result;
-	}
-
-	std::string c_tostr(const char *str) {
-
-		std::string str2(str);
-		return str2;
-	}
-
-	bool is_number(const std::string& s) {
-		return !s.empty() && std::find_if(s.begin(),
-			s.end(), [](unsigned char c) { return !std::isdigit(c); }) == s.end();
-	}
-
-	bool is_hex(std::string const& s) {
-		return s.compare(0, 2, "0x") == 0
-			&& s.size() > 2
-			&& s.find_first_not_of("0123456789abcdefABCDEF", 2) == std::string::npos;
-	}
-
-	bool is_whitespace(const char& ch) {
-		return ( ch == ' ' || ch == '\t' || ch == '\n' || ch == '\r' || ch == '\f' || ch == '\v' );
-	}
-
-	bool is_whitespace(const std::string& s) {
-		return !s.empty() && is_whitespace(s.front());
-	}
-
-	bool is_space(const char& ch) {
-		return ch == ' ' || ch == '\t';
-	}
-
-        bool is_space(const std::string& s) {
-		return !s.empty() && is_space(s.front());
-	}
-
-        bool is_digit(const char& ch) {
-		return ch >= '0' && ch <= '9';
-	}
-
-        bool is_digit(const std::string& s) {
-		return !s.empty() && is_digit(s.front());
-	}
-
-        bool is_alpha(const char& ch) {
-		return ( ch >= 'A' && ch <= 'Z' ) || ( ch >= 'a' && ch <= 'z' ) || ch == '_';
-	}
-
-        bool is_alpha(const std::string& s) {
-		return !s.empty() && is_alpha(s.front());
-	}
-
-        bool is_alnum(const char& ch) {
-		return is_alpha(ch) || is_digit(ch);
-	}
-
-        bool is_alnum(const std::string& s) {
-		return !s.empty() && is_alnum(s.front());
-	}
-
-        const std::string erase_prefix(std::string& s, size_t n) {
-
-		if ( s.empty() || n == 0 )
-			return "";
-
-		std::string r;
-
-		if ( r = s.substr(0, n > s.size() ? s.size() : n); !r.empty())
-			s.erase(0, r.size());
-
-		return r;
-	}
-
-        const char erase_front(std::string &s) {
-
-		if ( !s.empty()) {
-			char ch = s.front();
-			s.erase(0, 1);
-			return ch;
-		} else return 0;
-	}
-
-        const std::string to_string(const double& d) {
-
-		std::stringstream ss;
-		ss << d;
-		return ss.str();
-	}
-
-	const std::string unquoted(const std::string& s, bool trimmed) {
-
-		std::string r = trimmed ? trim_ws(s) : s;
-
-		if ( r.empty())
-			return r;
-
-		if ( trimmed ) {
-
-			if ( r.front() == '\'' && r.back() == '\'' ) {
-
-				r.erase(0, 1);
-				r.pop_back();
-			} else if ( r.front() == '"' && r.back() == '"' ) {
-
-				r.erase(0, 1);
-				r.pop_back();
-			}
-
-			return r;
-		}
-
-		int i1 = -1;
-		int i2 = -1;
-		std::string ws = " \t\r\f\v";
-
-		for ( size_t i = 0; i < r.size(); i++ ) {
-
-			if ( ws.find_first_of(r.at(i)) == std::string::npos && (
-				r.at(i) == '\'' || r.at(i) == '"' )) {
-
-				i1 = i;
-				break;
-			}
-		}
-
-		if ( i1 == -1 )
-			return r;
-
-		for ( size_t i = r.size() - 1; i > 0; i++ ) {
-
-			if ( ws.find_first_of(r.at(i)) == std::string::npos &&
-				i != (size_t)i1 && r.at(i) == r.at(i1) && (
-				r.at(i) == '\'' || r.at(i) == '"' )) {
-
-					i2 = i;
-					break;
-			}
-		}
-
-		if ( i2 > i1 ) {
-
-			r.erase(i2, 1);
-			r.erase(i1, 1);
-		}
-
-		return r;
-	}
-
-	const std::string unquoted(std::string& s, bool trimmed) {
-		s = unquoted(std::as_const(s));
-		return s;
-	}
-
-
-	std::string trim_leading(const std::string str, int count) {
-
-		if ( count < 1 )
-			return str;
-
-		if ( (size_t)count > str.size())
-			count = str.size();
-
-		std::string ret = str;
-		ret.erase(0, count);
-		return ret;
-	}
-
-	double round(double val) {
-		return val < 0 ? std::ceil(val - 0.5) : std::floor(val + 0.5);
-	}
-
-	std::string memToStr(double amount, bool gigabytes) {
-
-		std::ostringstream res;
-		double value = amount;
-		uint8_t valuetype = 0;
-
-		if ( value >= 1024 ) {
-			value = common::round(value / 1024);
-			valuetype = 1;
-			if ( value >= 1024 ) {
-				value = common::round(value / 1024);
-				valuetype = 2;
-				if ( gigabytes && value >= 1024 ) {
-					value = round((value / 1024) * 100.0 ) / 100.0;
-					valuetype = 3;
-				}
-			}
-		}
-
-		res.precision(valuetype == 3 ? 2 : 0);
-		res << std::fixed << value;
-
-		switch ( valuetype ) {
-			case 0: res << "b"; break;
-			case 1: res << "kb"; break;
-			case 2: res << "mb"; break;
-			case 3: res << "gb"; break;
-		}
-
-		return res.str();
-	}
-
-	std::filesystem::path selfexe() {
-		return std::filesystem::exists("/proc/self/exe") &&
-			std::filesystem::is_symlink("/proc/self/exe") ?
-				std::filesystem::read_symlink("/proc/self/exe") : "";
-
-	}
-
-	std::filesystem::path selfpath() {
-		return std::filesystem::exists("/proc/self/exe") &&
-			std::filesystem::is_symlink("/proc/self/exe") ?
-				std::filesystem::read_symlink("/proc/self/exe").parent_path() : "";
-	}
-
-	std::filesystem::path selfbasename() {
-		return std::filesystem::exists("/proc/self/exe") &&
-			std::filesystem::is_symlink("/proc/self/exe") ?
-				std::filesystem::read_symlink("/proc/self/exe").filename() : "";
-	}
-
-	std::ostream& operator <<(std::ostream &os, const padding& p) {
-
-		for ( size_t i = 0; i < p.width; i++ )
-			os << p.fill;
-
-		return os;
-	}
-
+uint64_t common::mix(const char& m, const uint64_t& s) {
+	return ((s<<7) + ~(s>>3)) + ~m;
 }
 
-common::lowercase_map<std::string> common::parseFile(const std::string& filename, unsigned char delim) {
+uint64_t common::hash(const char *m) {
+	return (*m) ? common::mix(*m,hash(m+1)) : 0;
+}
+
+std::string common::to_string(common::char_type& ch) {
+
+	std::string s;
+	s += ch;
+	return s;
+}
+
+bool common::has_prefix(const std::string& str, const std::string& prefix) {
+
+	return ((prefix.length() <= str.length()) &&
+		std::equal(prefix.begin(), prefix.end(), str.begin()));
+}
+
+bool common::has_suffix(const std::string& str, const std::string& suffix) {
+
+	return ((suffix.length() <= str.length()) &&
+		str.find(suffix, str.size() - suffix.size()) != std::string::npos);
+}
+
+std::string str_first(const std::string& str, const common::char_type& delim) {
+
+	if ( auto pos = str.find_first_of(delim); pos != std::string::npos )
+		return str.substr(0, pos);
+
+	return "";
+}
+
+std::string common::trimmed(std::string& str, const std::string& trimchars) {
+
+	if ( str.empty() || trimchars.empty())
+		return str;
+
+	for ( const char &ch : trimchars )
+		str.erase(std::remove(str.begin(), str.end(), ch), str.end());
+
+	return str;
+}
+
+std::string common::trimmed(const std::string& str, const std::string& trimchars) {
+
+	std::string s = str;
+	return common::trimmed(s, trimchars);
+}
+
+std::vector<std::string> common::lines(const std::string& str, const std::string& delim, const std::string& trimchars) {
+
+	if ( str.empty())
+		return {};
+
+	std::string s(str);
+	std::vector<std::string> vec;
+	size_t pos;
+
+	if ( !trimchars.empty())
+		while (( pos = s.find_first_of(trimchars)) != std::string::npos )
+			s.erase(pos, 1);
+
+	while (( pos = str.find_first_of(delim)) != std::string::npos ) {
+
+		std::string tok = s.substr(0, pos);
+		vec.push_back(s.substr(0, pos));
+		s.erase(0, pos + delim.size());
+	}
+
+	return vec;
+}
+
+std::vector<std::string> common::lines(const std::string& str, const common::char_type& delim, const std::string& trimchars) {
+
+	return common::lines(str, common::to_string(delim), trimchars);
+}
+
+std::vector<std::string> common::split(const std::string& str, const std::string& delim, const std::string& trimchars) {
+
+	std::vector<std::string> vec = common::lines(str, delim, trimchars);
+	vec.erase(std::remove_if(vec.begin(), vec.end(), [](const std::string& s) { return s.empty(); }), vec.end());
+	return vec;
+}
+
+std::vector<std::string> common::split(const std::string& str, const common::char_type& delim, const std::string& trimchars) {
+
+	std::vector<std::string> vec = common::lines(str, delim, trimchars);
+	vec.erase(std::remove_if(vec.begin(), vec.end(), [](const std::string& s) { return s.empty(); }), vec.end());
+	return vec;
+}
+
+std::string common::to_lower(std::string& str) {
+
+	for ( auto& ch : str )
+		if ( std::isupper(ch))
+			ch ^= 32;
+	return str;
+}
+
+std::string common::to_lower(const std::string& str) {
+
+	std::string s = str;
+	return common::to_lower(s);
+}
+
+std::string common::to_upper(std::string& str) {
+
+	for ( auto& ch : str )
+		if ( std::islower(ch))
+			ch &= ~32;
+	return str;
+}
+
+std::string common::to_upper(const std::string& str) {
+	std::string s = str;
+	return common::to_upper(s);
+}
+
+std::string common::join_vector(const std::vector<std::string>& vec, const std::string& delim) {
+
+		std::string res;
+
+		for ( auto s : vec )
+			res += ( res.empty() ? "" : delim ) + s;
+
+		return res;
+	}
+
+std::string common::join_vector(const std::vector<std::string>& vec, const common::char_type& delim) {
+
+	return common::join_vector(vec, common::to_string(delim));
+}
+
+bool common::is_number(const std::string& s) {
+
+	return !s.empty() && s.find_first_not_of("1234567890") != std::string::npos;
+}
+
+bool common::is_hex(const std::string& s) {
+
+	return ( s.starts_with("0x") && s.size() > 2 &&
+		s.find_first_not_of("01234567890abcdefABCDEF", 2) == std::string::npos ) ||
+		( !s.empty() && s.find_first_not_of("01234567890abcdefABCDEF") == std::string::npos );
+}
+bool common::is_whitespace(const common::char_type& ch) {
+	return std::string(" \t\n\r\f\v").find_first_of(ch) != std::string::npos;
+}
+
+bool common::is_space(const common::char_type& ch) {
+	return ch == ' ' || ch == '\t';
+}
+
+bool common::is_digit(const common::char_type& ch) {
+	return std::isdigit(ch);
+}
+
+bool common::is_alpha(const common::char_type& ch) {
+	return ( ch >= 'A' && ch <= 'Z' ) || ( ch >= 'a' && ch <= 'z' ) || ch == '_';
+}
+
+bool common::is_alnum(const common::char_type& ch) {
+	return std::isdigit(ch) || common::is_alpha(ch);
+}
+
+bool common::starts_with_whitespace(const std::string& s) {
+	return !s.empty() && common::is_whitespace(s.front());
+}
+
+bool common::starts_with_space(const std::string& s) {
+	return !s.empty() && common::is_space(s.front());
+}
+
+bool common::starts_with_digit(const std::string& s) {
+	return !s.empty() && common::is_digit(s.front());
+}
+
+bool common::starts_with_alpha(const std::string& s) {
+	return !s.empty() && common::is_alpha(s.front());
+}
+
+bool common::starts_with_alnum(const std::string& s) {
+	return !s.empty() && is_alnum(s.front());
+}
+
+std::string common::erase_prefix(std::string& s, size_t n) {
+
+	if ( s.empty() || n == 0 )
+		return "";
+
+	std::string r;
+
+	if ( r = s.substr(0, n > s.size() ? s.size() : n); !r.empty())
+		s.erase(0, r.size());
+
+	return r;
+}
+
+common::char_type common::erase_front(std::string &s) {
+
+	if ( s.empty())
+		return 0;
+
+	common::char_type c = s.front();
+	s.erase(0, 1);
+	return c;
+}
+
+std::string common::to_string(const double& d) {
+
+	std::stringstream ss;
+	ss << d;
+	return ss.str();
+}
+
+std::string common::unquoted(const std::string& s, bool trimmed) {
+
+	std::string r = trimmed ? trim_ws(s) : s;
+
+	if ( r.empty())
+		return r;
+
+	if ( trimmed ) {
+
+		if ( r.front() == '\'' && r.back() == '\'' ) {
+
+			r.erase(0, 1);
+			r.pop_back();
+		} else if ( r.front() == '"' && r.back() == '"' ) {
+
+			r.erase(0, 1);
+			r.pop_back();
+		}
+
+		return r;
+	}
+
+	int i1 = -1;
+	int i2 = -1;
+	std::string ws = " \t\r\f\v";
+
+	for ( size_t i = 0; i < r.size(); i++ ) {
+
+		if ( ws.find_first_of(r.at(i)) == std::string::npos && (
+			r.at(i) == '\'' || r.at(i) == '"' )) {
+
+			i1 = i;
+			break;
+		}
+	}
+
+	if ( i1 == -1 )
+		return r;
+
+	for ( size_t i = r.size() - 1; i > 0; i++ ) {
+
+		if ( ws.find_first_of(r.at(i)) == std::string::npos &&
+			i != (size_t)i1 && r.at(i) == r.at(i1) &&
+			( r.at(i) == '\'' || r.at(i) == '"' )) {
+
+			i2 = i;
+			break;
+		}
+	}
+
+	if ( i2 > i1 ) {
+
+		r.erase(i2, 1);
+		r.erase(i1, 1);
+	}
+
+	return r;
+}
+
+std::string common::unquoted(std::string& s, bool trimmed) {
+
+	s = unquoted(std::as_const(s));
+	return s;
+}
+
+std::string common::rtrim_ws(const std::string& s, const std::string& ws) {
+
+	std::string _s = s;
+	_s.erase(_s.find_last_not_of(ws) + 1);
+	return _s;
+}
+
+std::string common::ltrim_ws(const std::string& s, const std::string& ws) {
+
+	std::string _s = s;
+	_s.erase(0, _s.find_first_not_of(ws));
+	return _s;
+}
+
+std::string common::trim_ws(const std::string& s, const std::string& ws) {
+
+	return common::ltrim_ws(common::rtrim_ws(s, ws), ws);
+}
+
+std::string common::trim_leading(const std::string& str, int count) {
+
+	if ( count < 1 )
+		return str;
+
+	if ((size_t)count > str.size())
+		count = str.size();
+
+	std::string ret = str;
+	ret.erase(0, count);
+	return ret;
+}
+
+double common::round(double val) {
+	return val < 0 ? std::ceil(val - 0.5) : std::floor(val + 0.5);
+}
+
+std::string common::memToStr(double amount, bool gigabytes) {
+
+	std::ostringstream res;
+	double value = amount;
+	uint8_t valuetype = 0;
+
+	if ( value >= 1024 ) {
+
+		value = common::round(value / 1024);
+		valuetype = 1;
+
+		if ( value >= 1024 ) {
+
+			value = common::round(value / 1024);
+			valuetype = 2;
+
+			if ( gigabytes && value >= 1024 ) {
+
+				value = round((value / 1024) * 100.0 ) / 100.0;
+				valuetype = 3;
+			}
+		}
+	}
+
+	res.precision(valuetype == 3 ? 2 : 0);
+	res << std::fixed << value;
+
+	switch ( valuetype ) {
+		case 0: res << "b"; break;
+		case 1: res << "kb"; break;
+		case 2: res << "mb"; break;
+		case 3: res << "gb"; break;
+	}
+
+	return res.str();
+}
+
+std::string common::time_str(const std::time_t& t) {
+
+/*
+	std::time_t _t = t;
+	struct tm *timeinfo = std::localtime(&_t);
+	std::string ret(std::asctime(timeinfo));
+	return common::trim(ret, "\t\r\n");
+*/
+
+	std::time_t _t = t;
+	char buf[80];
+	strftime(buf, sizeof buf, "%F %R", std::localtime(&_t));
+	return std::string(buf);
+}
+
+std::string common::uptime_str(const std::time_t& t, bool longdesc, bool seconds) {
+
+	std::time_t _t = t;
+	std::string ret;
+
+	int d = _t > 86400 ? _t / 86400 : 0;
+	if ( d > 0 )
+		_t -= d * 86400;
+
+	int h = _t > 3600 ? _t / 3600 : 0;
+	if ( h > 0 )
+		_t -= d * 3600;
+
+	int m = _t > 60 ? _t / 60 : 0;
+	if ( m > 0 )
+		_t -= m * 60;
+
+	if ( longdesc ) {
+
+		if ( d > 0 )
+			ret += std::to_string(d) + ( d > 1 ? " days" : " day" );
+
+		if ( d > 0 || h > 0 )
+			ret += ( ret.empty() ? "" : " " ) + std::to_string(h) +
+				( h != 1 ? " hours: " : " hour" );
+
+		if ( d > 0 || h > 0 || m > 0 )
+			ret += ( ret.empty() ? "" : " " ) + std::to_string(m) +
+				( m != 1 ? " minutes": " minute" );
+
+		if ( seconds )
+			ret += ( ret.empty() ? "" : " " ) + std::to_string(_t) +
+				( _t != 1 ? " seconds" : " second");
+	} else {
+
+		if ( d > 0 )
+			ret += std::to_string(d) + "d";
+
+		if ( d > 0 || h > 0 )
+			ret += ( ret.empty() ? "" : " " ) + std::to_string(h) + "h";
+
+		if ( d > 0 || h > 0 || m > 0 )
+			ret += ( ret.empty() ? "" : " " ) + std::to_string(m) + "m";
+
+		if ( seconds )
+			ret += ( ret.empty() ? "" : " " ) + std::to_string(_t) + "s";
+	}
+
+	return ret;
+}
+
+std::chrono::milliseconds common::get_millis() {
+
+	return std::chrono::duration_cast<std::chrono::milliseconds>
+		(std::chrono::system_clock::now().time_since_epoch());
+}
+
+common::lowercase_map<std::string> common::parseFile(const std::string& filename, const common::char_type& delim) {
 
 	std::ifstream fd(filename, std::ios::in | std::ios::binary);
 	std::string s;
@@ -395,4 +469,33 @@ common::lowercase_map<std::string> common::parseFile(const std::string& filename
 
 	fd.close();
 	return m;
+}
+
+std::filesystem::path common::selfexe() {
+
+	return std::filesystem::exists("/proc/self/exe") &&
+		std::filesystem::is_symlink("/proc/self/exe") ?
+			std::filesystem::read_symlink("/proc/self/exe") : "";
+}
+
+std::filesystem::path common::selfpath() {
+
+	return std::filesystem::exists("/proc/self/exe") &&
+		std::filesystem::is_symlink("/proc/self/exe") ?
+			std::filesystem::read_symlink("/proc/self/exe").parent_path() : "";
+}
+
+std::filesystem::path common::selfbasename() {
+
+	return std::filesystem::exists("/proc/self/exe") &&
+		std::filesystem::is_symlink("/proc/self/exe") ?
+			std::filesystem::read_symlink("/proc/self/exe").filename() : "";
+}
+
+std::ostream& operator <<(std::ostream &os, const common::padding& p) {
+
+	for ( size_t i = 0; i < p.width; i++ )
+		os << p.fill;
+
+	return os;
 }

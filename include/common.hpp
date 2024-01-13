@@ -26,232 +26,187 @@
 
 namespace common {
 
+	using char_type = std::string::value_type;
+
 	template <class T>
 	class lowercase_map;
 
 	struct padding {
 		size_t width;
-		unsigned char fill = ' ';
+		common::char_type fill = ' ';
 	};
-
-	std::ostream& operator <<(std::ostream &os, const padding& p);
 
 	struct duration {
 
-		private:
+	private:
 
-			template<typename Rep, typename Period>
-			void generate(const std::chrono::duration<Rep, Period> d) {
+		template<typename Rep, typename Period>
+		void create(const std::chrono::duration<Rep, Period>& d);
 
-				std::chrono::milliseconds millis =
-					std::chrono::duration_cast<std::chrono::milliseconds>(d);
+	public:
 
-				this -> timestamp = millis.count();
-				auto _hours = std::chrono::duration_cast<std::chrono::hours>(millis);
-				this -> hours = _hours.count();
-				millis -= _hours;
-				auto _minutes = std::chrono::duration_cast<std::chrono::minutes>(millis);
-				this -> minutes = _minutes.count();
-				millis -= _minutes;
-				auto _seconds = std::chrono::duration_cast<std::chrono::seconds>(millis);
-				this -> seconds = _seconds.count();
-				millis -= _seconds;
-				this -> ms = millis.count();
-			}
+		int hours, minutes, seconds, ms;
+		long timestamp;
 
-		public:
+		template<typename Clock>
+		duration(const std::chrono::time_point<Clock>& point,
+				const std::chrono::time_point<Clock>& since);
 
-			int hours, minutes, seconds, ms;
-			long timestamp;
-
-			template<typename Clock>
-			duration(const std::chrono::time_point<Clock> point,
-					const std::chrono::time_point<Clock> since) {
-
-				auto d = point.time_since_epoch() -
-						since.time_since_epoch();
-				this -> generate(d);
-			}
-
-			template<typename Rep, typename Period>
-			duration(const std::chrono::duration<Rep, Period> d) {
-
-				this -> generate(d);
-			}
-
+		template<typename Rep, typename Period>
+		duration(const std::chrono::duration<Rep, Period> &d);
 	};
 
-	static std::string whitespace = " \t\n\r\f\v";
+	static const std::string whitespace = " \t\n\r\f\v";
 
-	uint64_t constexpr mix(char m, uint64_t s) {
-		return ((s<<7) + ~(s>>3)) + ~m;
-	}
-
-	uint64_t constexpr hash(const char *m) {
-		return (*m) ? common::mix(*m,hash(m+1)) : 0;
-	}
+	uint64_t mix(const char& m, const uint64_t& s);
+	uint64_t hash(const char *m);
+	std::string to_string(common::char_type& ch);
 
 	template<typename... Ts>
-	std::string fmt(const std::string& fmt, Ts... vs) {
+	std::string fmt(const std::string& fmt, Ts... vs);
 
-		size_t size = snprintf(nullptr, 0, fmt.c_str(), vs...);
-		std::string buf;
-		buf.reserve(size + 1);
-		buf.resize(size);
-		snprintf(&buf[0], size + 1, fmt.c_str(), vs...);
-		return buf;
-	}
+	bool has_prefix(const std::string& str, const std::string& prefix);
+	bool has_suffix(const std::string& str, const std::string& suffix);
 
-	bool has_prefix(const std::string str, const std::string prefix);
+	std::string str_first(const std::string& str, const common::char_type& delim = ' ');
 
-	bool has_suffix(const std::string str, const std::string suffix);
+	std::string trimmed(std::string& str, const std::string& trimchars);
+	std::string trimmed(const std::string& str, const std::string& trimchars);
 
-	std::string str_first(const std::string str, char delim = ' ');
+	std::vector<std::string> lines(const std::string& str, const std::string& delim = "\n",
+		const std::string& trimchars = "\r");
+	std::vector<std::string> lines(const std::string& str, const common::char_type& delim,
+		const std::string& trimchars = "\r");
 
-	std::string trim(std::string &str, const std::string trimchars);
+	std::vector<std::string> split(const std::string& str, const std::string& delim = "\n",
+		const std::string& trimchars = "\r");
+	std::vector<std::string> split(const std::string& str, const common::char_type& delim,
+		const std::string& trimchars = "\r");
 
-	std::string trim(const std::string &str, const std::string trimchars);
+	std::string to_lower(std::string& str);
+	std::string to_lower(const std::string& str);
+	std::string to_upper(std::string& str);
+	std::string to_upper(const std::string& str);
 
-	std::vector<std::string> lines(const std::string &str, char delim = '\n',
-		const std::string trimchars = "\r");
-
-	std::vector<std::string> split(const std::string &str,
-		char delim = ' ', const std::string trimchars = "");
-
-	std::string to_lower(std::string &str);
-
-	std::string to_lower(const std::string &str);
-
-	std::string to_upper(std::string &str);
-
-	std::string to_upper(const std::string &str);
-
-	std::string join_vector(const std::vector<std::string> v, const std::string delimeter = ", ");
-
-	std::string c_tostr(const char *str);
+	std::string join_vector(const std::vector<std::string>& vec, const std::string& delim = ", ");
+	std::string join_vector(const std::vector<std::string>& vec, const common::char_type& delim);
 
 	bool is_number(const std::string& s);
+	bool is_hex(const std::string& s);
 
-	bool is_hex(std::string const& s);
-
-	bool is_whitespace(const char& ch);
-	bool is_space(const char& ch);
-	bool is_digit(const char& ch);
-	bool is_alpha(const char& ch);
-	bool is_alnum(const char& ch);
+	bool is_whitespace(const common::char_type& ch);
+	bool is_space(const common::char_type& ch);
+	bool is_digit(const common::char_type& ch);
+	bool is_alpha(const common::char_type& ch);
+	bool is_alnum(const common::char_type& ch);
 
 	// test if string's first char is in criteria..
-	bool is_whitespace(const std::string& s);
-	bool is_space(const std::string& s);
-	bool is_digit(const std::string& s);
-	bool is_alpha(const std::string& s);
-	bool is_alnum(const std::string& s);
+	bool starts_with_whitespace(const std::string& s);
+	bool starts_with_space(const std::string& s);
+	bool starts_with_digit(const std::string& s);
+	bool starts_with_alpha(const std::string& s);
+	bool starts_with_alnum(const std::string& s);
 
-	const std::string erase_prefix(std::string& s, size_t n);
-	const char erase_front(std::string &s);
-	const std::string to_string(const double& d);
+	std::string erase_prefix(std::string& s, size_t n);
+	common::char_type erase_front(std::string &s);
+	std::string to_string(const double& d);
+
+	std::string unquoted(std::string& s, bool trimmed = true);
+	std::string unquoted(const std::string& s, bool trimmed = true);
 
 	// trim from end of string (right)
-	inline std::string rtrim_ws(const std::string s, const std::string& t = whitespace) {
-		std::string _s = s;
-		_s.erase(_s.find_last_not_of(t) + 1);
-		return _s;
-	}
+	std::string rtrim_ws(const std::string& s, const std::string& ws = common::whitespace);
 
 	// trim from beginning of string (left)
-	inline std::string ltrim_ws(const std::string s, const std::string& t = whitespace) {
-		std::string _s = s;
-		_s.erase(0, _s.find_first_not_of(t));
-		return _s;
-	}
+	std::string ltrim_ws(const std::string& s, const std::string& ws = common::whitespace);
 
 	// trim from both ends of string (right then left)
-	inline std::string trim_ws(const std::string s, const std::string& t = whitespace) {
-		return common::ltrim_ws(common::rtrim_ws(s, t), t);
-	}
+	std::string trim_ws(const std::string& s, const std::string& ws = common::whitespace);
 
-	const std::string unquoted(const std::string& s, bool trimmed = true);
-	const std::string unquoted(std::string& s, bool trimmed = true);
+	std::string trim_leading(const std::string& str, int count = 1);
 
-	std::string trim_leading(const std::string str, int count = 1);
 	double round(double val);
 	std::string memToStr(double amount, bool gigabytes = false);
 
 	template <typename T>
-	inline const std::string to_string(const T value, const int precision = 6) {
-		std::ostringstream res;
-		res.precision(precision);
-		res << std::fixed << value;
-		return res.str();
-	}
+	inline std::string to_string(const T& value, const int precision = 6);
 
-	inline const std::string time_str(const std::time_t t) {
-/*
-		std::time_t _t = t;
-		struct tm* timeinfo = localtime(&_t);
-		std::string ret(asctime(timeinfo));
-		return common::trim(ret, "\t\r\n");
-*/
-		std::time_t _t = t;
-		char buf[64];
-		strftime(buf, sizeof buf, "%F %R", std::localtime(&_t));
-		std::string ret(buf);
-		return ret;
-	}
+	std::string time_str(const std::time_t& t);
+	std::string uptime_str(const std::time_t& t, bool longdesc = false, bool seconds = true);
 
-	inline const std::string uptime_str(const std::time_t t, bool longdesc = false) {
-		std::time_t _t = t;
-		std::string ret;
-		int d = _t > 86400 ? _t / 86400 : 0;
-		if ( d != 0 ) _t -= d * 86400;
-		int h = _t > 3600 ? _t / 3600 : 0;
-		if ( h != 0 ) _t -= h * 3600;
-		int m = _t > 60 ? _t / 60 : 0;
-		if ( m != 0 ) _t -= m * 60;
+	std::chrono::milliseconds get_millis();
 
-		if ( longdesc ) {
-			if ( d > 0 )
-				ret += std::to_string(d) + ( d > 1 ? " days" : " day" );
-			if ( d > 0 || h > 0 )
-				ret += ( ret.empty() ? "" : " " ) + std::to_string(h) +
-					( h != 1 ? " hours" : " hour" );
-			if ( d > 0 || h > 0 || m > 0 )
-				ret += ( ret.empty() ? "" : " " ) + std::to_string(m) +
-					( m != 1 ? " minutes" : " minute" );
-			ret += ( ret.empty() ? "" : " " ) + std::to_string(_t) +
-				( _t != 1 ? " seconds" : " second");
-		} else {
-			if ( d > 0 )
-				ret += std::to_string(d) + "d";
-			if ( d > 0 || h > 0 )
-				ret += ( ret.empty() ? "" : " " ) + std::to_string(h) + "h";
-			if ( d > 0 || h > 0 || m > 0 )
-				ret += ( ret.empty() ? "" : " " ) + std::to_string(m) + "m";
-			ret += ( ret.empty() ? "" : " " ) + std::to_string(_t) + "s";
-		}
-
-		return ret;
-	}
-
-	inline const std::chrono::milliseconds get_millis(void) {
-		return std::chrono::duration_cast<std::chrono::milliseconds>
-			(std::chrono::system_clock::now().time_since_epoch());
-	}
-
+	// why this? std::map already has contains method..
 	template<typename K, typename V>
-	inline bool map_contains(K key, const std::map<K, V> Map) {
+	inline bool map_contains(K key, const std::map<K, V> Map);
 
-		for (typename std::map<K, V>::const_iterator it = Map.begin(); it != Map.end(); it++ )
-			if ( it -> first == key )
-				return true;
-
-		return false;
-	}
-
-	common::lowercase_map<std::string> parseFile(const std::string& filename, unsigned char delim = ':');
+	common::lowercase_map<std::string> parseFile(const std::string& filename, const common::char_type& delim = ':');
 
 	std::filesystem::path selfexe();
 	std::filesystem::path selfpath();
 	std::filesystem::path selfbasename();
 
+}
+
+std::ostream& operator <<(std::ostream& os, const common::padding& p);
+
+template<typename Rep, typename Period>
+void common::duration::create(const std::chrono::duration<Rep, Period>& d) {
+
+	std::chrono::milliseconds millis =
+		std::chrono::duration_cast<std::chrono::milliseconds>(d);
+
+	this -> timestamp = millis.count();
+	auto _hours = std::chrono::duration_cast<std::chrono::hours>(millis);
+	this -> hours = _hours.count();
+	millis -= _hours;
+	auto _minutes = std::chrono::duration_cast<std::chrono::minutes>(millis);
+	this -> minutes = _minutes.count();
+	millis -= _minutes;
+	auto _seconds = std::chrono::duration_cast<std::chrono::seconds>(millis);
+	this -> seconds = _seconds.count();
+	millis -= _seconds;
+	this -> ms = millis.count();
+}
+
+template<typename Clock>
+common::duration::duration(const std::chrono::time_point<Clock>& point,
+	const std::chrono::time_point<Clock>& since) {
+	this -> create(point.time_since_epoch() - since.time_since_epoch());
+}
+
+template<typename Rep, typename Period>
+common::duration::duration(const std::chrono::duration<Rep, Period> &d) {
+	this -> create(d);
+}
+
+template<typename... Ts>
+std::string common::fmt(const std::string& fmt, Ts... vs) {
+
+	size_t size = snprintf(nullptr, 0, fmt.c_str(), vs...);
+	std::string buf;
+	buf.reserve(size + 1);
+	buf.resize(size);
+	snprintf(&buf[0], size + 1, fmt.c_str(), vs...);
+	return buf;
+}
+
+template <typename T>
+inline std::string common::to_string(const T& value, const int precision) {
+
+	std::ostringstream res;
+
+	res.precision(precision);
+	res << std::fixed << value;
+	return res.str();
+}
+
+template<typename K, typename V>
+inline bool common::map_contains(K key, const std::map<K, V> m) {
+
+	for ( auto it = m.begin(); it != m.end(); it++ )
+		if ( it -> first == key )
+			return true;
+
+	return false;
 }
