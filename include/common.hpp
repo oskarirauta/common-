@@ -26,6 +26,9 @@
 
 namespace common {
 
+	template <class T>
+	class lowercase_map;
+
 	struct padding {
 		size_t width;
 		unsigned char fill = ' ';
@@ -244,6 +247,8 @@ namespace common {
 
 		return false;
 	}
+
+	common::lowercase_map<std::string> parseFile(const std::string& filename, unsigned char delim = ':');
 
 	std::filesystem::path selfexe();
 	std::filesystem::path selfpath();

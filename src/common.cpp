@@ -5,8 +5,10 @@
 #include <string>
 #include <cmath>
 #include <filesystem>
+#include <fstream>
 
 #include "common.hpp"
+#include "lowercase_map.hpp"
 
 namespace common {
 
@@ -359,4 +361,38 @@ namespace common {
 		return os;
 	}
 
+}
+
+common::lowercase_map<std::string> common::parseFile(const std::string& filename, unsigned char delim) {
+
+	std::ifstream fd(filename, std::ios::in | std::ios::binary);
+	std::string s;
+	tsl::ordered_map<std::string, std::string> m;
+
+	if ( !fd || !fd.good()) {
+
+		if ( fd.is_open())
+			fd.close();
+
+		throw std::runtime_error("fatal error, could not read " + filename);
+	}
+
+	while ( std::getline(fd, s)) {
+
+		auto pos = s.find_first_of(delim);
+		if ( pos == std::string::npos )
+			continue;
+
+		pos += 1;
+		std::string k = common::trim_ws(common::to_lower(s.substr(0, pos - 1)));
+		std::string v = common::trim_ws(s.substr(pos, sizeof(v) + 1 - pos));
+
+		if ( k.empty() || v.empty())
+			continue;
+
+		m[k] = v;
+	}
+
+	fd.close();
+	return m;
 }
