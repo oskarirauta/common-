@@ -100,7 +100,8 @@ namespace common {
 	bool is_alpha(const common::char_type& ch);
 	bool is_alnum(const common::char_type& ch);
 
-	// test if string's first char is in criteria..
+	// test if string's first char is in criteria.. renamed from:
+	// is_whitespace, is_space, is_digit, is_alpha and is_alnum
 	bool starts_with_whitespace(const std::string& s);
 	bool starts_with_space(const std::string& s);
 	bool starts_with_digit(const std::string& s);
