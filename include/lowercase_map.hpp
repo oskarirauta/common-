@@ -11,11 +11,12 @@ namespace common {
 	template <class T>
 	class lowercase_map {
 
-	using mapped_type = T;
-	using value_type = typename std::pair<std::string, T>;
-	using map_type = typename tsl::ordered_map<std::string, T>;
-	using size_type = typename map_type::size_type;
-	using Self = typename common::lowercase_map<T>;
+	public:
+		using mapped_type = T;
+		using value_type = typename std::pair<std::string, T>;
+		using map_type = typename tsl::ordered_map<std::string, T>;
+		using size_type = typename map_type::size_type;
+		using Self = typename common::lowercase_map<T>;
 
 	private:
 		map_type _m;
