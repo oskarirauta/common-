@@ -223,8 +223,17 @@ common::char_type common::erase_front(std::string &s) {
 std::string common::to_string(const double& d) {
 
 	std::stringstream ss;
-	ss << d;
-	return ss.str();
+	ss << std::fixed << d;
+	std::string s = ss.str();
+	if ( s.find_first_of('.') != std::string::npos ) {
+
+		while ( s.back() == '0' )
+			s.pop_back();
+
+		if ( s.back() == '.' )
+			s.pop_back();
+	}
+	return s;
 }
 
 std::string common::unquoted(const std::string& s, bool trimmed) {
