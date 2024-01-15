@@ -471,6 +471,27 @@ common::lowercase_map<std::string> common::parseFile(const std::string& filename
 	return m;
 }
 
+static long int get_timezone_diff() {
+	::tzset();
+	extern long int timezone;
+	return timezone;
+}
+
+long int common::timezone_diff() {
+	time_t ts = 0;
+	struct tm t;
+	::time(&ts);
+	::localtime_r(&ts, &t);
+	return -get_timezone_diff() + ( t.tm_isdst ? 60 * 60 : 0);
+}
+
+struct tm common::to_tm(const std::chrono::time_point<std::chrono::system_clock>& tp) {
+	time_t ts = std::chrono::system_clock::to_time_t(tp);
+	struct tm t;
+	::localtime_r(&ts, &t);
+	return t;
+}
+
 std::filesystem::path common::selfexe() {
 
 	return std::filesystem::exists("/proc/self/exe") &&

@@ -143,6 +143,9 @@ namespace common {
 
 	common::lowercase_map<std::string> parseFile(const std::string& filename, const common::char_type& delim = ':');
 
+	long int timezone_diff(); // current timezone diff in seconds
+	struct tm to_tm(const std::chrono::time_point<std::chrono::system_clock>& tp = std::chrono::system_clock::now());
+
 	std::filesystem::path selfexe();
 	std::filesystem::path selfpath();
 	std::filesystem::path selfbasename();
