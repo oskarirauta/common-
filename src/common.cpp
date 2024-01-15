@@ -510,6 +510,43 @@ std::chrono::seconds common::mk_duration(double d) {
 	return std::chrono::duration_cast<std::chrono::seconds>(tp.time_since_epoch());
 }
 
+std::string common::put_time(const std::string& format, double d) {
+
+	std::stringstream ss;
+	std::chrono::seconds s = common::mk_duration(d);
+	std::chrono::system_clock::time_point tp(s);
+	time_t t = std::chrono::system_clock::to_time_t(tp);
+
+	ss << std::put_time(std::localtime(&t), format.c_str());
+	return ss.str();
+}
+
+std::string common::put_time(const std::string& format, const std::chrono::seconds &s) {
+
+	std::stringstream ss;
+	std::chrono::system_clock::time_point tp(s);
+	time_t t = std::chrono::system_clock::to_time_t(tp);
+
+	ss << std::put_time(std::localtime(&t), format.c_str());
+	return ss.str();
+}
+
+std::string common::put_time(const std::string& format, const std::chrono::system_clock::time_point& tp) {
+
+	std::stringstream ss;
+	time_t t = std::chrono::system_clock::to_time_t(tp);
+
+	ss << std::put_time(std::localtime(&t), format.c_str());
+	return ss.str();
+}
+
+std::string common::put_time(const std::string& format, const time_t& t) {
+
+	std::stringstream ss;
+	ss << std::put_time(std::localtime(&t), format.c_str());
+	return ss.str();
+}
+
 struct tm common::to_tm(const std::chrono::time_point<std::chrono::system_clock>& tp) {
 	time_t ts = std::chrono::system_clock::to_time_t(tp);
 	struct tm t;

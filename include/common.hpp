@@ -148,6 +148,11 @@ namespace common {
 	std::chrono::seconds mk_duration(std::chrono::system_clock::time_point tp = std::chrono::system_clock::now());
 	std::chrono::seconds mk_duration(double d);
 
+	std::string put_time(const std::string& format, double d);
+	std::string put_time(const std::string& format, const std::chrono::seconds &s);
+	std::string put_time(const std::string& format, const std::chrono::system_clock::time_point& tp);
+	std::string put_time(const std::string& format, const time_t& t);
+
 	struct tm to_tm(const std::chrono::time_point<std::chrono::system_clock>& tp = std::chrono::system_clock::now());
 
 	std::filesystem::path selfexe();
