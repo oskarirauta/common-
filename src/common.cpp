@@ -485,6 +485,22 @@ long int common::timezone_diff() {
 	return -get_timezone_diff() + ( t.tm_isdst ? 60 * 60 : 0);
 }
 
+std::chrono::system_clock::time_point common::mk_time_point(double d) {
+
+	return std::chrono::system_clock::from_time_t(d);
+}
+
+std::chrono::seconds common::mk_duration(std::chrono::system_clock::time_point tp) {
+
+	return std::chrono::duration_cast<std::chrono::seconds>(tp.time_since_epoch());
+}
+
+std::chrono::seconds common::mk_duration(double d) {
+
+	std::chrono::system_clock::time_point tp = common::mk_time_point(d);
+	return std::chrono::duration_cast<std::chrono::seconds>(tp.time_since_epoch());
+}
+
 struct tm common::to_tm(const std::chrono::time_point<std::chrono::system_clock>& tp) {
 	time_t ts = std::chrono::system_clock::to_time_t(tp);
 	struct tm t;
