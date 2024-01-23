@@ -67,6 +67,9 @@ namespace common {
 
 		T& operator [](const std::string& key);
 		T& operator [](std::string& key);
+                T operator [](const std::string& key) const;
+                T operator [](std::string& key) const;
+
 		bool operator ==(const lowercase_map<T>& other);
 		bool operator !=(const lowercase_map<T>& other);
 		bool operator <(const lowercase_map<T>&other);
@@ -92,7 +95,7 @@ namespace common {
 		lowercase_map(const value_type& pair);
 
 		T& at(const std::string& key);
-		const T& at(const std::string& key) const;
+		const T at(const std::string& key) const;
 
 		bool contains(const std::string& key) const;
 
@@ -178,6 +181,16 @@ namespace common {
 
 	template <class T>
 	T& lowercase_map<T>::operator [](std::string& key) {
+		return this -> _m[common::to_lower(std::as_const(key))];
+	}
+
+	template <class T>
+	T lowercase_map<T>::operator [](const std::string& key) const {
+		return this -> _m[common::to_lower(std::as_const(key))];
+	}
+
+	template <class T>
+	T lowercase_map<T>::operator [](std::string& key) const {
 		return this -> _m[common::to_lower(std::as_const(key))];
 	}
 
@@ -303,7 +316,7 @@ namespace common {
 	}
 
 	template <class T>
-	const T& lowercase_map<T>::at(const std::string& key) const {
+	const T lowercase_map<T>::at(const std::string& key) const {
 		return this -> _m[common::to_lower(std::as_const(key))];
 	}
 
