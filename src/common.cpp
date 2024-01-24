@@ -148,7 +148,7 @@ std::string common::join_vector(const std::vector<std::string>& vec, const commo
 
 bool common::is_number(const std::string& s) {
 
-	return !s.empty() && s.find_first_not_of("1234567890") != std::string::npos;
+	return !s.empty() && s.find_first_not_of("1234567890") == std::string::npos;
 }
 
 bool common::is_hex(const std::string& s) {
