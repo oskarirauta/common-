@@ -155,6 +155,9 @@ namespace common {
 
 	struct tm to_tm(const std::chrono::time_point<std::chrono::system_clock>& tp = std::chrono::system_clock::now());
 
+	template<typename T>
+	bool is_any_of(const T& value, const std::vector<T>& values);
+
 	std::filesystem::path selfexe();
 	std::filesystem::path selfpath();
 	std::filesystem::path selfbasename();
@@ -222,4 +225,10 @@ inline bool common::map_contains(K key, const std::map<K, V> m) {
 			return true;
 
 	return false;
+}
+
+template<typename T>
+bool common::is_any_of(const T& value, const std::vector<T>& values) {
+
+	return std::find(values.begin(), values.end(), value) != values.end();
 }
