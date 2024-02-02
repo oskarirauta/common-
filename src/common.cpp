@@ -301,6 +301,13 @@ std::string common::unquoted(std::string& s, bool trimmed) {
 	return s;
 }
 
+std::string common::unquoted_and_trimmed(const std::string& s, bool lowercased) {
+
+	return lowercased ?
+			common::to_lower(common::trim_ws(common::unquoted(common::trim_ws(std::as_const(s))))) :
+			common::trim_ws(common::unquoted(common::trim_ws(std::as_const(s))));
+}
+
 std::string common::rtrim_ws(const std::string& s, const std::string& ws) {
 
 	std::string _s = s;
@@ -552,6 +559,55 @@ struct tm common::to_tm(const std::chrono::time_point<std::chrono::system_clock>
 	struct tm t;
 	::localtime_r(&ts, &t);
 	return t;
+}
+
+std::vector<gid_t> common::get_groups() {
+
+	int n = ::getgroups(0, nullptr);
+	gid_t *gids = new gid_t[n];
+	::getgroups(n, gids);
+	std::vector<gid_t> groups(gids, gids + n);
+	delete []gids;
+	return groups;
+}
+
+std::vector<std::string> common::get_netdevs() {
+
+	if ( !std::filesystem::exists("/proc/net/dev"))
+		throw std::runtime_error("cannot access /proc/net/dev");
+
+	std::fstream fd("/proc/net/dev", std::ios::in);
+
+	if ( !fd.good()) {
+
+		if ( fd.is_open())
+			fd.close();
+
+		throw std::runtime_error("cannot read /proc/net/dev");
+	}
+
+	std::vector<std::string> devs;
+	std::string line;
+
+	while ( std::getline(fd, line)) {
+
+		line = common::trim_ws(line);
+		if ( line.starts_with("Inter") || line.starts_with("face"))
+			continue;
+
+		if ( auto pos = line.find_first_of(' '); pos != std::string::npos ) {
+
+			line = line.substr(0, pos);
+			if ( line.back() != ':' ) continue;
+			else line.pop_back();
+		} else continue;
+
+		if ( line = common::trim_ws(line); !line.empty())
+			devs.push_back(line);
+	}
+
+	fd.close();
+	return devs;
 }
 
 std::filesystem::path common::selfexe() {

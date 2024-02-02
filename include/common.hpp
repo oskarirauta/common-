@@ -7,6 +7,7 @@
 #include <ctime>
 #include <map>
 #include <filesystem>
+#include <unistd.h>
 
 #ifndef STRINGIFY
 #define STRINGIFY(s) #s
@@ -115,6 +116,8 @@ namespace common {
 	std::string unquoted(std::string& s, bool trimmed = true);
 	std::string unquoted(const std::string& s, bool trimmed = true);
 
+	std::string unquoted_and_trimmed(const std::string& s, bool lowercased = false);
+
 	// trim from end of string (right)
 	std::string rtrim_ws(const std::string& s, const std::string& ws = common::whitespace);
 
@@ -140,6 +143,8 @@ namespace common {
 	// why this? std::map already has contains method..
 	template<typename K, typename V>
 	inline bool map_contains(K key, const std::map<K, V> Map);
+	template<typename T>
+	inline bool vector_contains(const T& value, const std::vector<T>& values);
 
 	common::lowercase_map<std::string> parseFile(const std::string& filename, const common::char_type& delim = ':');
 
@@ -157,6 +162,9 @@ namespace common {
 
 	template<typename T>
 	bool is_any_of(const T& value, const std::vector<T>& values);
+
+	std::vector<gid_t> get_groups();
+	std::vector<std::string> get_netdevs();
 
 	std::filesystem::path selfexe();
 	std::filesystem::path selfpath();
@@ -225,6 +233,12 @@ inline bool common::map_contains(K key, const std::map<K, V> m) {
 			return true;
 
 	return false;
+}
+
+template<typename T>
+bool common::vector_contains(const T& value, const std::vector<T>& values) {
+
+	return std::find(values.begin(), values.end(), value) != values.end();
 }
 
 template<typename T>
