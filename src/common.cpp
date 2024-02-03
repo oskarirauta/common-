@@ -133,7 +133,7 @@ std::string common::to_upper(const std::string& str) {
 
 // to_hex: https://stackoverflow.com/a/72132640/1314831
 
-std::string to_hex(const unsigned char& number, size_t minimum_length) {
+std::string common::to_hex(const unsigned char& number, size_t minimum_length) {
 
 	char addressStr[4] = { 0 };
 	std::to_chars(std::begin(addressStr), std::end(addressStr), number, 16);
@@ -143,7 +143,7 @@ std::string to_hex(const unsigned char& number, size_t minimum_length) {
 	return ret;
 }
 
-std::string to_hex(const unsigned int& number) {
+std::string common::to_hex(const unsigned int& number) {
 
 	char addressStr[20] = { 0 };
 	std::to_chars(std::begin(addressStr), std::end(addressStr), number, 16);
