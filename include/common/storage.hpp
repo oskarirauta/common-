@@ -1,11 +1,15 @@
 #pragma once
 
 #include <ostream>
+#include <istream>
+#include <type_traits>
 
 namespace common {
 
 template<typename T>
 class Storage {
+
+	static_assert(std::is_arithmetic<T>::value, "Not an arithmetic type, Storage type must be numeric");
 
 	private:
 
@@ -15,6 +19,7 @@ class Storage {
 
 	public:
 
+		Storage() {}
 		Storage(T v) : value(v) {}
 
 		operator T&() { return this -> value; }
@@ -110,4 +115,11 @@ std::ostream& operator <<(std::ostream& os, const common::Storage<T>& s) {
 
 	os << s.raw();
 	return os;
+}
+
+template<typename T>
+std::istream& operator >>(std::istream& is, common::Storage<T>& s) {
+
+	is >> s.raw();
+	return is;
 }
