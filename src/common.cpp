@@ -131,6 +131,26 @@ std::string common::to_upper(const std::string& str) {
 	return common::to_upper(s);
 }
 
+// to_hex: https://stackoverflow.com/a/72132640/1314831
+
+std::string to_hex(const unsigned char& number, size_t minimum_length) {
+
+	char addressStr[4] = { 0 };
+	std::to_chars(std::begin(addressStr), std::end(addressStr), number, 16);
+	std::string ret{addressStr};
+	while ( ret.size() < minimum_length )
+		ret = "0" + ret;
+	return ret;
+}
+
+std::string to_hex(const unsigned int& number) {
+
+	char addressStr[20] = { 0 };
+	std::to_chars(std::begin(addressStr), std::end(addressStr), number, 16);
+	return std::string{addressStr};
+}
+
+
 std::string common::join_vector(const std::vector<std::string>& vec, const std::string& delim) {
 
 		std::string res;

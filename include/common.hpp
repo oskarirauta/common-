@@ -88,6 +88,8 @@ namespace common {
 	std::string to_lower(const std::string& str);
 	std::string to_upper(std::string& str);
 	std::string to_upper(const std::string& str);
+	std::string to_hex(const unsigned char& number, size_t minimum_length = 0);
+	std::string to_hex(const unsigned int& number);
 
 	std::string join_vector(const std::vector<std::string>& vec, const std::string& delim = ", ");
 	std::string join_vector(const std::vector<std::string>& vec, const common::char_type& delim);
