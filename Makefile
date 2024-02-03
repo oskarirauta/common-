@@ -11,14 +11,17 @@ OBJS:= \
 COMMON_DIR:=.
 include ./Makefile.inc
 
-world: test
+world: example
+
+$(shell mkdir -p objs)
 
 objs/main.o: main.cpp
 	$(CXX) $(CXXFLAGS) $(INCLUDES) -c -o $@ $<;
 
-test: $(COMMON_OBJS) $(OBJS)
+example: $(COMMON_OBJS) $(OBJS)
 	$(CXX) $(CXXFLAGS) $(LDFLAGS) -L. $(LIBS) $^ -o $@;
 
 .PHONY: clean
 clean:
-	rm -f objs/*.o test
+	@rm -f objs/*.o example
+	@rmdir objs
