@@ -1,6 +1,7 @@
 #include <iostream>
 #include "common.hpp"
 #include "lowercase_map.hpp"
+#include "common/storage.hpp"
 
 int main(int argc, char **argv) {
 
