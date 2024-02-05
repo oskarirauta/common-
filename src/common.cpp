@@ -6,6 +6,7 @@
 #include <cmath>
 #include <filesystem>
 #include <fstream>
+#include <charconv>
 
 #include "common.hpp"
 #include "lowercase_map.hpp"
