@@ -151,6 +151,35 @@ std::string common::int_to_hex(const unsigned int& number) {
 	return std::string{addressStr};
 }
 
+double common::to_KiB(unsigned long int bytes) {
+
+	if ( bytes < 103 )
+		return (double)0;
+
+	double d = (double)(bytes) / 1024;
+	unsigned long int b = (unsigned long int)((d * 10) + 0.5);
+	return (double)b * 0.1;
+}
+
+double common::to_MiB(unsigned long int bytes) {
+
+	if ( bytes < 104858 )
+		return (double)0;
+
+	double d = (double)(bytes) / 1048576;
+	unsigned long int b = (unsigned long int)((d * 10) + 0.5);
+	return (double)b * 0.1;
+}
+
+double common::to_GiB(unsigned long int bytes) {
+
+	if ( bytes < 107374183 )
+		return (double)0;
+
+	double d = (double)(bytes) / 1073741824;
+	unsigned long int b = (unsigned long int)((d * 10) + 0.5);
+	return (double)b * 0.1;
+}
 
 std::string common::join_vector(const std::vector<std::string>& vec, const std::string& delim) {
 

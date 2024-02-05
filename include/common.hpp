@@ -91,6 +91,10 @@ namespace common {
 	std::string to_hex(const unsigned char& number, size_t minimum_length = 0);
 	std::string int_to_hex(const unsigned int& number);
 
+	double to_KiB(unsigned long int bytes);
+	double to_MiB(unsigned long int bytes);
+	double to_GiB(unsigned long int bytes);
+
 	std::string join_vector(const std::vector<std::string>& vec, const std::string& delim = ", ");
 	std::string join_vector(const std::vector<std::string>& vec, const common::char_type& delim);
 
