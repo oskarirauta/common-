@@ -181,6 +181,17 @@ double common::to_GiB(unsigned long int bytes) {
 	return (double)b * 0.1;
 }
 
+// based on example found from https://en.cppreference.com/w/cpp/filesystem/file_size
+
+std::string common::HumanReadable(const double& d) {
+
+	int o = 0;
+	double mantissa = d;
+	for ( ; mantissa >= 1024.; mantissa /= 1024., o++ );
+	unsigned long int ns = std::ceil(mantissa * 10.);
+	return common::to_string((double)ns * 0.1) + "BKMGTPE"[o];
+}
+
 std::string common::join_vector(const std::vector<std::string>& vec, const std::string& delim) {
 
 		std::string res;

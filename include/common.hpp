@@ -95,6 +95,9 @@ namespace common {
 	double to_MiB(unsigned long int bytes);
 	double to_GiB(unsigned long int bytes);
 
+	// return file size / capacity in human readable format
+	std::string HumanReadable(const double &d);
+
 	std::string join_vector(const std::vector<std::string>& vec, const std::string& delim = ", ");
 	std::string join_vector(const std::vector<std::string>& vec, const common::char_type& delim);
 
