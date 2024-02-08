@@ -102,6 +102,7 @@ namespace common {
 	std::string join_vector(const std::vector<std::string>& vec, const common::char_type& delim);
 
 	bool is_number(const std::string& s);
+	bool is_float(const std::string& s);
 	bool is_hex(const std::string& s);
 
 	bool is_whitespace(const common::char_type& ch);

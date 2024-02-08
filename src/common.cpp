@@ -212,6 +212,17 @@ bool common::is_number(const std::string& s) {
 	return !s.empty() && s.find_first_not_of("1234567890") == std::string::npos;
 }
 
+bool common::is_float(const std::string& s) {
+
+	if ( s.empty() || s.find_first_not_of("1234567890.") != std::string::npos || s.find_first_of("1234567890") == std::string::npos )
+		return false;
+
+	if ( s.find_first_of('.') == std::string::npos )
+		return true;
+
+	return std::count_if(s.begin(), s.end(), [](std::string::value_type ch) { return ch == '.'; }) < 2;
+}
+
 bool common::is_hex(const std::string& s) {
 
 	return ( s.starts_with("0x") && s.size() > 2 &&
