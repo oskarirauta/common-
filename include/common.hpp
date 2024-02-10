@@ -173,6 +173,9 @@ namespace common {
 	template<typename T>
 	bool is_any_of(const T& value, const std::vector<T>& values);
 
+	template<typename Iter>
+	void rotate_one(Iter first, Iter last);
+
 	std::vector<gid_t> get_groups();
 	std::vector<std::string> get_netdevs();
 
@@ -255,4 +258,20 @@ template<typename T>
 bool common::is_any_of(const T& value, const std::vector<T>& values) {
 
 	return std::find(values.begin(), values.end(), value) != values.end();
+}
+
+// This awesome snippet is not written by me, it is from here:
+// https://stackoverflow.com/a/51660916/1314831
+template<typename Iter>
+void common::rotate_one(Iter first, Iter last) {
+
+	using Value = typename Iter::value_type;
+
+	if (first != last) {
+
+		Value temp = std::move(*first);
+		for ( Iter next = std::next(first); next != last; first = next, next = std::next(next))
+			*first = std::move(*next);
+		*first = std::move(temp);
+	}
 }
