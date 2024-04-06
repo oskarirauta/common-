@@ -31,14 +31,17 @@ bool common::has_prefix(const std::string& str, const std::string& prefix) {
 	#if __cplusplus >= 202002L
 		return str.starts_with(prefix);
 	#else
-		return str.substr(0, prefix.size()).compare(prefix) == 0;
+		return str.size() >= prefix.size() && str.substr(0, prefix.size()).compare(prefix) == 0;
 	#endif
 }
 
 bool common::has_suffix(const std::string& str, const std::string& suffix) {
 
-	return ((suffix.length() <= str.length()) &&
-		str.find(suffix, str.size() - suffix.size()) != std::string::npos);
+	#if __cplusplus >= 202002L
+		return str.ends_with(suffix);
+	#else
+		return str.size() >= suffix.size() && str.substr(str.size() - suffix.size(), suffix.size()).compare(suffix) == 0;
+	#endif
 }
 
 std::string str_first(const std::string& str, const common::char_type& delim) {
