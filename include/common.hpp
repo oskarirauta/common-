@@ -7,6 +7,7 @@
 #include <ctime>
 #include <map>
 #include <filesystem>
+#include <algorithm>
 #include <unistd.h>
 
 #ifndef STRINGIFY
