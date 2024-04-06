@@ -18,42 +18,14 @@ namespace common {
 		using size_type = typename map_type::size_type;
 		using Self = typename common::lowercase_map<T>;
 
+		using iterator = typename tsl::ordered_map<std::string, T>::iterator;
+		using const_iterator = typename tsl::ordered_map<std::string, T>::const_iterator;
+
+
 	private:
 		map_type _m;
 
 	public:
-
-		class const_iterator {
-		friend class lowercase_map;
-		protected:
-			map_type::const_iterator c_it;
-			const_iterator(const map_type::const_iterator& it) : c_it(it) {}
-
-		public:
-			const_iterator() = default;
-			const_iterator& operator++() { ++this -> c_it; return *this; }
-			const_iterator operator++(int) const { auto tmp = *this; ++(*this); return tmp; }
-			bool operator==(const const_iterator& rhs) const { return this -> c_it == rhs.c_it; }
-			bool operator!=(const const_iterator& rhs) const { return this -> c_it != rhs.c_it; }
-			const value_type& operator*() const { return *(this -> c_it); }
-			const value_type* operator->() const { return this -> c_it.operator -> (); }
-		}; // end of class common::lowercase_map<T>::const_iterator
-
-		class iterator : public const_iterator {
-		friend class lowercase_map;
-		private:
-			map_type::iterator _it;
-			iterator(const map_type::iterator &it) : _it(it) {}
-
-		public:
-			iterator() = default;
-			iterator& operator++() { ++this -> _it; return *this; }
-			iterator operator++(int) { auto tmp = *this; ++(*this); return tmp; }
-			bool operator==(const iterator& rhs) { return this -> _it == rhs._it; }
-			bool operator!=(const iterator& rhs) { return this -> _it != rhs._it; }
-			const value_type& operator*() { return *(this -> _it); }
-			const value_type* operator->() { return this -> _it.operator -> (); }
-		}; // end of class common::lowercase_map<T>::iterator
 
 		iterator begin();
 		iterator end();
@@ -76,7 +48,9 @@ namespace common {
 		bool operator <=(const lowercase_map<T>&other);
 		bool operator >(const lowercase_map<T>&other);
 		bool operator >=(const lowercase_map<T>&other);
+#if __cplusplus >= 202002L
 		bool operator <=>(const lowercase_map<T>&other);
+#endif
 
 		Self& operator =(const std::initializer_list<value_type>& l);
 		Self& operator =(const Self& other);
@@ -128,48 +102,48 @@ namespace common {
 	}; // end of class common::lowercase_map<T> introduction
 
 	template <class T>
-	lowercase_map<T>::iterator lowercase_map<T>::begin() {
-		return lowercase_map<T>::iterator(this -> _m.begin());
+	typename lowercase_map<T>::iterator lowercase_map<T>::begin() {
+		return this -> _m.begin();
 	}
 
 	template <class T>
-	lowercase_map<T>::iterator lowercase_map<T>::end() {
-		return lowercase_map<T>::iterator(this -> _m.end());
+	typename lowercase_map<T>::iterator lowercase_map<T>::end() {
+		return this -> _m.end();
 	}
 
 	template <class T>
-	lowercase_map<T>::iterator lowercase_map<T>::find(const std::string& key) {
+	typename lowercase_map<T>::iterator lowercase_map<T>::find(const std::string& key) {
 		auto it = this -> _m.find(key);
 		return lowercase_map<T>::iterator(it);
 	}
 
 	template <class T>
-	lowercase_map<T>::iterator lowercase_map<T>::mutable_iterator(lowercase_map<T>::const_iterator pos) {
+	typename lowercase_map<T>::iterator lowercase_map<T>::mutable_iterator(lowercase_map<T>::const_iterator pos) {
 		return lowercase_map<T>::iterator(this -> _m.mutable_iterator(pos.c_it));
 	}
 
 	template <class T>
-	lowercase_map<T>::const_iterator lowercase_map<T>::cbegin() const {
+	typename lowercase_map<T>::const_iterator lowercase_map<T>::cbegin() const {
 		return lowercase_map<T>::const_iterator(this -> _m.cbegin());
 	}
 
 	template <class T>
-	lowercase_map<T>::const_iterator lowercase_map<T>::cend() const {
+	typename lowercase_map<T>::const_iterator lowercase_map<T>::cend() const {
 		return lowercase_map<T>::const_iterator(this -> _m.cend());
 	}
 
 	template <class T>
-	lowercase_map<T>::const_iterator lowercase_map<T>::begin() const {
+	typename lowercase_map<T>::const_iterator lowercase_map<T>::begin() const {
 		return lowercase_map<T>::const_iterator(this -> _m.cbegin());
 	}
 
 	template <class T>
-	lowercase_map<T>::const_iterator lowercase_map<T>::end() const {
+	typename lowercase_map<T>::const_iterator lowercase_map<T>::end() const {
 		return lowercase_map<T>::const_iterator(this -> _m.cend());
 	}
 
 	template <class T>
-	lowercase_map<T>::const_iterator lowercase_map<T>::find(const std::string& key) const {
+	typename lowercase_map<T>::const_iterator lowercase_map<T>::find(const std::string& key) const {
 		auto it = this -> _m.find(key);
 		return lowercase_map<T>::const_iterator(it);
 	}
@@ -224,10 +198,12 @@ namespace common {
 		return this -> _m >= other._m;
 	}
 
+#if __cplusplus >= 202002L
 	template <class T>
 	bool lowercase_map<T>::operator <=>(const lowercase_map<T>&other) {
 		return this -> _m <=> other._m;
 	}
+#endif
 
 	template <class T>
 	lowercase_map<T>& lowercase_map<T>::operator =(const std::initializer_list<std::pair<std::string, T>>& l) {
@@ -331,12 +307,12 @@ namespace common {
 	}
 
 	template <class T>
-	lowercase_map<T>::size_type lowercase_map<T>::size() const {
+	typename lowercase_map<T>::size_type lowercase_map<T>::size() const {
 		return this -> _m.size();
 	}
 
 	template <class T>
-	lowercase_map<T>::size_type lowercase_map<T>::max_size() const {
+	typename lowercase_map<T>::size_type lowercase_map<T>::max_size() const {
 		return this -> _m.max_size();
 	}
 
@@ -432,17 +408,17 @@ namespace common {
 	}
 
 	template <class T>
-	lowercase_map<T>::size_type lowercase_map<T>::erase(const std::string& key) {
+	typename lowercase_map<T>::size_type lowercase_map<T>::erase(const std::string& key) {
 		return this -> _m.erase(common::to_lower(std::as_const(key)));
 	}
 
 	template <class T>
-	lowercase_map<T>::size_type lowercase_map<T>::erase(lowercase_map<T>::const_iterator pos) {
+	typename lowercase_map<T>::size_type lowercase_map<T>::erase(lowercase_map<T>::const_iterator pos) {
 		return this -> _m.erase(pos.c_it);
 	}
 
 	template <class T>
-	lowercase_map<T>::size_type lowercase_map<T>::erase(lowercase_map<T>::iterator pos) {
+	typename lowercase_map<T>::size_type lowercase_map<T>::erase(lowercase_map<T>::iterator pos) {
 		return this -> _m.erase(pos.it);
 	}
 

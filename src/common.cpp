@@ -28,8 +28,11 @@ std::string common::to_string(common::char_type& ch) {
 
 bool common::has_prefix(const std::string& str, const std::string& prefix) {
 
-	return ((prefix.length() <= str.length()) &&
-		std::equal(prefix.begin(), prefix.end(), str.begin()));
+	#if __cplusplus >= 202002L
+		return str.starts_with(prefix);
+	#else
+		return str.substr(0, prefix.size()).compare(prefix) == 0;
+	#endif
 }
 
 bool common::has_suffix(const std::string& str, const std::string& suffix) {
@@ -225,10 +228,11 @@ bool common::is_float(const std::string& s) {
 
 bool common::is_hex(const std::string& s) {
 
-	return ( s.starts_with("0x") && s.size() > 2 &&
-		s.find_first_not_of("01234567890abcdefABCDEF", 2) == std::string::npos ) ||
-		( !s.empty() && s.find_first_not_of("01234567890abcdefABCDEF") == std::string::npos );
+	return ( common::has_prefix(s, "0x") && s.size() > 2 &&
+		 s.find_first_not_of("01234567890abcdefABCDEF", 2) == std::string::npos ) ||
+                ( !s.empty() && s.find_first_not_of("01234567890abcdefABCDEF") == std::string::npos );
 }
+
 bool common::is_whitespace(const common::char_type& ch) {
 	return std::string(" \t\n\r\f\v").find_first_of(ch) != std::string::npos;
 }
@@ -664,7 +668,7 @@ std::vector<std::string> common::get_netdevs() {
 	while ( std::getline(fd, line)) {
 
 		line = common::trim_ws(line);
-		if ( line.starts_with("Inter") || line.starts_with("face"))
+		if ( common::has_prefix(line, "Inter") || common::has_prefix(line, "face"))
 			continue;
 
 		if ( auto pos = line.find_first_of(' '); pos != std::string::npos ) {
