@@ -4,9 +4,6 @@ COMMON_OBJS:= \
 	objs/common_scanner.o \
 	objs/common.o
 
-COMMON_OBJS_NO_LMAP:= \
-	objs/common.o
-
 objs/common_scanner.o: $(COMMON_DIR)/src/scanner.cpp
 	$(CXX) $(CXXFLAGS) $(INCLUDES) -c -o $@ $<;
 
