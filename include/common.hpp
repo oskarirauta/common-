@@ -37,8 +37,10 @@ namespace common {
 		size_t width;
 		common::char_type fill = ' ';
 
+		#if __cplusplus < 202002L
 		padding(size_t width) : width(width) {}
 		padding(size_t width, common::char_type fill) : width(width), fill(fill) {}
+		#endif
 	};
 
 	struct duration {
