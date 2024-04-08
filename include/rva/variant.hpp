@@ -68,8 +68,36 @@ class variant : public std::variant<replace_t<T, self_t, variant<T...>>...> {
         return this;
     }
 
+#if __cplusplus >= 202002L
     auto operator<=>(variant const&) const = default;
     bool operator==(variant const&) const = default;
+#else
+
+    bool operator<(variant const& other) const {
+	return *this < other;
+    }
+
+    bool operator<=(variant const& other) const {
+	return *this <= other;
+    }
+
+    bool operator>(variant const& other) const {
+	return *this > other;
+    }
+
+    bool operator>=(variant const& other) const {
+	return *this >= other;
+    }
+
+    bool operator==(variant const& other) const {
+	return *this == other;
+    }
+
+    bool operator!=(variant const& other) const {
+	return *this == other ? false : true;
+    }
+
+#endif
 };
 
 // See: https://en.cppreference.com/w/cpp/utility/variant/visit
