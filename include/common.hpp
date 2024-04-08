@@ -36,6 +36,9 @@ namespace common {
 	struct padding {
 		size_t width;
 		common::char_type fill = ' ';
+
+		padding(size_t width) : width(width) {}
+		padding(size_t width, common::char_type fill) : width(width), fill(fill) {}
 	};
 
 	struct duration {
