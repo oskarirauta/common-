@@ -1,7 +1,6 @@
 all: world
 CXX?=g++
 CXXFLAGS?=--std=c++17 -Wall -fPIC -g
-LDFLAGS?=-L/lib -L/usr/lib
 
 INCLUDES+= -I./include
 
@@ -19,7 +18,7 @@ objs/main.o: main.cpp
 	$(CXX) $(CXXFLAGS) $(INCLUDES) -c -o $@ $<;
 
 example: $(COMMON_OBJS) $(OBJS)
-	$(CXX) $(CXXFLAGS) $(LDFLAGS) -L. $(LIBS) $^ -o $@;
+	$(CXX) $(CXXFLAGS) $(LDFLAGS) $^ -o $@;
 
 .PHONY: clean
 clean:
