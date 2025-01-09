@@ -2,6 +2,7 @@
 
 #include <set>
 #include <algorithm>
+#include <initializer_list>
 
 template <class T>
 class FeatureSet {
@@ -34,6 +35,7 @@ class FeatureSet {
 		FeatureSet<T>& operator +=(const T& type);
 		FeatureSet<T>& operator -=(const T& type);
 
+		FeatureSet<T>& operator =(const std::initializer_list<T>& features);
 		FeatureSet<T>& operator =(const FeatureSet<T>& other);
 		bool operator ==(const FeatureSet<T>& other);
 
@@ -48,6 +50,9 @@ class FeatureSet {
 
 		iterator<T> begin();
 		iterator<T> end();
+
+		FeatureSet() {};
+		FeatureSet(const std::initializer_list<T> features);
 
 	private:
 		std::set<T> store;
@@ -113,6 +118,22 @@ FeatureSet<T>& FeatureSet<T>::operator -=(const T& type) {
 
 	if ( bool contains = this -> operator ==(type); contains )
 		this -> store.erase(type);
+
+	return *this;
+}
+
+template <class T>
+FeatureSet<T>& FeatureSet<T>::operator =(const std::initializer_list<T>& features) {
+
+	this -> store.clear();
+
+	for ( auto it = features.begin(); it != features.end(); it++ ) {
+
+		T feature = *it;
+
+		if ( !this -> contains(feature))
+			this -> store.insert(feature);
+	}
 
 	return *this;
 }
@@ -186,6 +207,18 @@ template <class T>
 bool FeatureSet<T>::empty() {
 
 	return this -> store.empty();
+}
+
+template <class T>
+FeatureSet<T>::FeatureSet(const std::initializer_list<T> features) {
+
+	for ( auto it = features.begin(); it != features.end(); it++ ) {
+
+		T feature = *it;
+
+		if ( !this -> contains(feature))
+			this -> store.insert(feature);
+	}
 }
 
 template <class T>
