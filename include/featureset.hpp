@@ -45,8 +45,8 @@ class FeatureSet {
 		void erase(const T& type);
 
 		void clear();
-		size_t size();
-		bool empty();
+		size_t size() const;
+		bool empty() const;
 
 		iterator<T> begin();
 		iterator<T> end();
@@ -198,13 +198,13 @@ void FeatureSet<T>::clear() {
 }
 
 template <class T>
-size_t FeatureSet<T>::size() {
+size_t FeatureSet<T>::size() const {
 
 	return this -> store.size();
 }
 
 template <class T>
-bool FeatureSet<T>::empty() {
+bool FeatureSet<T>::empty() const {
 
 	return this -> store.empty();
 }
