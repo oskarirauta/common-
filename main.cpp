@@ -6,6 +6,7 @@
 #include "common/storage.hpp"
 #include "common/scanner.hpp"
 #include "common/enumerate.hpp"
+#include "featureset.hpp"
 
 void scanner_test() { // string scanner usage test
 

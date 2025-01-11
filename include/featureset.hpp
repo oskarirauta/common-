@@ -26,6 +26,23 @@ class FeatureSet {
 				bool operator !=(const iterator& other) const noexcept { return this -> it != other.it; }
 		};
 
+		template <class T2>
+		class const_iterator {
+
+			friend class FeatureSet<T2>;
+
+			private:
+				typename std::set<T2>::const_iterator it;
+				const_iterator(const typename std::set<T2>::const_iterator& it) : it(it) {}
+
+			public:
+				T2 operator *() noexcept { return *(this -> it); }
+				const_iterator<T2> operator++() noexcept { ++this -> it; return *this; }
+				const_iterator<T2> operator++(int) noexcept { const_iterator<T2> tmp = *this; ++this -> it; return tmp; }
+				bool operator ==(const const_iterator& other) const noexcept { return this -> it == other.it; }
+				bool operator !=(const const_iterator& other) const noexcept { return this -> it != other.it; }
+		};
+
 		bool operator ==(const T& type) const;
 		bool operator !=(const T& type) const;
 		bool operator [](const T& type) const;
@@ -50,6 +67,10 @@ class FeatureSet {
 
 		iterator<T> begin();
 		iterator<T> end();
+		const_iterator<T> cbegin();
+		const_iterator<T> cend();
+		const_iterator<T> begin() const;
+		const_iterator<T> end() const;
 
 		FeatureSet() {};
 		FeatureSet(const std::initializer_list<T> features);
@@ -229,4 +250,24 @@ FeatureSet<T>::iterator<T> FeatureSet<T>::begin() {
 template <class T>
 FeatureSet<T>::iterator<T> FeatureSet<T>::end() {
 	return FeatureSet<T>::iterator<T>(this -> store.end());
+}
+
+template <class T>
+FeatureSet<T>::const_iterator<T> FeatureSet<T>::cbegin() {
+        return FeatureSet<T>::const_iterator<T>(this -> store.cbegin());
+}
+
+template <class T>
+FeatureSet<T>::const_iterator<T> FeatureSet<T>::cend() {
+        return FeatureSet<T>::const_iterator<T>(this -> store.cend());
+}
+
+template <class T>
+FeatureSet<T>::const_iterator<T> FeatureSet<T>::begin() const {
+        return FeatureSet<T>::const_iterator<T>(this -> store.cbegin());
+}
+
+template <class T>
+FeatureSet<T>::const_iterator<T> FeatureSet<T>::end() const {
+        return FeatureSet<T>::const_iterator<T>(this -> store.cend());
 }
