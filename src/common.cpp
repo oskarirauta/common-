@@ -82,7 +82,7 @@ std::vector<std::string> common::lines(const std::string& str, const std::string
 		while (( pos = s.find_first_of(trimchars)) != std::string::npos )
 			s.erase(pos, 1);
 
-	while (( pos = str.find_first_of(delim)) != std::string::npos ) {
+	while (( pos = s.find_first_of(delim)) != std::string::npos ) {
 
 		std::string tok = s.substr(0, pos);
 		vec.push_back(s.substr(0, pos));
